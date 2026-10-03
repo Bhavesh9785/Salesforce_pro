@@ -1,0 +1,27 @@
+<template>
+    <div class="head"><div><h1>Reports</h1><p>Operational reports from Salesforce data</p></div><button class="btn" onclick={print}>Print</button></div>
+    <div class="report-grid">
+        <template for:each={reports} for:item="r">
+            <button key={r.key} class="report" data-key={r.key} onclick={openReport}>
+                <lightning-icon icon-name="standard:report" size="small"></lightning-icon><div><strong>{r.label}</strong><span>{r.description}</span></div><lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+            </button>
+        </template>
+    </div>
+    <section class="panel">
+        <div class="section-head"><strong>{selectedLabel}</strong><span>Report preview</span></div>
+        <div class="report-preview">
+            <template if:true={loading}><lightning-spinner alternative-text="Loading report"></lightning-spinner></template>
+            <template if:true={hasError}><div class="fake-table">{errorMessage}</div></template>
+            <template if:true={hasRows}>
+                <div class="metric">Showing up to 50 records</div>
+                <div class="fake-table"><table>
+                    <thead><tr><template for:each={columns} for:item="column"><th key={column.apiName}>{column.label}</th></template></tr></thead>
+                    <tbody><template for:each={rows} for:item="row"><tr key={row.key}>
+                        <template for:each={row.cells} for:item="cell"><td key={cell.key}>{cell.value}</td></template>
+                    </tr></template></tbody>
+                </table></div>
+            </template>
+            <template if:false={loading}><template if:false={hasRows}><template if:false={hasError}><div class="fake-table">No records found for this report.</div></template></template></template>
+        </div>
+    </section>
+</template>

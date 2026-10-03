@@ -1,0 +1,13 @@
+<template>
+    <div class="head"><div><h1>Dashboards</h1><p>Role-based showroom views</p></div></div>
+    <div class="dashboard-grid">
+        <template for:each={items} for:item="item">
+            <section key={item.title} class="panel">
+                <div class="title">{item.title}</div>
+                <div class="big">{item.value}</div>
+                <div class="sub">{item.sub}</div>
+                <div class="meter"><span style={item.style}></span></div>
+            </section>
+        </template>
+    </div>
+</template>

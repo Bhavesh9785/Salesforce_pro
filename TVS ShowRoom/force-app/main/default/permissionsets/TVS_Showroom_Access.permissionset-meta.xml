@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>TVS Showroom Access</label>
+    <description>Access required for the TVS Showroom LWC application. Add object/field permissions for your custom objects in your org.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+</PermissionSet>

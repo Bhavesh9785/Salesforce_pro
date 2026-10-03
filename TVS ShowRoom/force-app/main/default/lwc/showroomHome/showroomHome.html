@@ -1,0 +1,17 @@
+<template>
+    <div class="page-head"><div><h1>Home</h1><p>Quick access to showroom activities</p></div></div>
+    <section class="panel">
+        <div class="section-title">Quick Links</div>
+        <div class="links">
+            <template for:each={links} for:item="l">
+                <button key={l.key} class="link-card" data-key={l.key} onclick={go}>
+                    <lightning-icon icon-name={l.icon} size="small"></lightning-icon><span>{l.label}</span>
+                </button>
+            </template>
+        </div>
+    </section>
+    <div class="grid">
+        <section class="panel"><div class="section-title">Today's Events</div><div class="event">Test Ride <span>11:00 AM</span></div><div class="event">Service Appointment <span>01:00 PM</span></div><div class="event">Delivery <span>03:00 PM</span></div></section>
+        <section class="panel"><div class="section-title">Recent Records</div><div class="event">Recent Lead <span>View</span></div><div class="event">Recent Booking <span>View</span></div><div class="event">Recent Opportunity <span>View</span></div></section>
+    </div>
+</template>

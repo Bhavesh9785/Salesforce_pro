@@ -1,0 +1,99 @@
+<template>
+    <div class="app-shell">
+        <aside class={sidebarClass}>
+            <div class="brand">
+                <div class="brand-mark">TVS</div>
+                <div>
+                    <div class="brand-title">SHOWROOM</div>
+                    <div class="brand-subtitle">MANAGEMENT SYSTEM</div>
+                </div>
+            </div>
+
+            <nav class="side-nav">
+                <template for:each={navigation} for:item="item">
+                    <button key={item.key} class={item.className} data-key={item.key}
+                            onclick={handleNavigate} title={item.label}>
+                        <lightning-icon icon-name={item.icon} size="x-small"></lightning-icon>
+                        <span>{item.label}</span>
+                    </button>
+                </template>
+            </nav>
+
+            <div class="side-footer">
+                <span>Salesforce CRM</span>
+                <span class="version">LWC</span>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <button class="mobile-menu" onclick={toggleSidebar} title="Menu">
+                    <lightning-icon icon-name="utility:rows" size="small"></lightning-icon>
+                </button>
+
+                <div class="crumb">
+                    <span>TVS Showroom</span>
+                    <span class="slash">/</span>
+                    <strong>{pageTitle}</strong>
+                </div>
+
+                <div class="top-actions">
+                    <div class="search-wrap">
+                        <lightning-icon icon-name="utility:search" size="x-small"></lightning-icon>
+                        <input type="search" placeholder="Search records..." value={globalSearch}
+                               oninput={handleGlobalSearch} onkeydown={handleGlobalKey}/>
+                    </div>
+
+                    <button class="top-icon" onclick={refreshPage} title="Refresh">
+                        <lightning-icon icon-name="utility:refresh" size="small"></lightning-icon>
+                    </button>
+
+                    <button class="top-icon" onclick={toggleNotifications} title="Notifications">
+                        <lightning-icon icon-name="utility:notification" size="small"></lightning-icon>
+                        <span class="notification-dot"></span>
+                    </button>
+
+                    <div class="profile">
+                        <div class="avatar">{userInitial}</div>
+                        <div class="profile-text">
+                            <strong>{userName}</strong>
+                            <span>Sales User</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="content">
+                <template if:true={notificationsOpen}>
+                    <div class="notification-panel">
+                        <div class="panel-title">Notifications</div>
+                        <div class="notice">Review pending vehicle deliveries.</div>
+                        <div class="notice">Check today's service appointments.</div>
+                        <div class="notice">Review low inventory items.</div>
+                    </div>
+                </template>
+
+                <template if:true={showDashboard}>
+                    <c-showroom-dashboard onnavigate={handleChildNavigate}></c-showroom-dashboard>
+                </template>
+
+                <template if:true={showHome}>
+                    <c-showroom-home onnavigate={handleChildNavigate}></c-showroom-home>
+                </template>
+
+                <template if:true={showModule}>
+                    <c-showroom-module module-key={currentKey} initial-search={childSearch}
+                        start-new-record={createNewRequest} onnewrequesthandled={clearCreateRequest}></c-showroom-module>
+                </template>
+
+                <template if:true={showReports}>
+                    <c-showroom-reports></c-showroom-reports>
+                </template>
+
+                <template if:true={showDashboards}>
+                    <c-showroom-dashboards></c-showroom-dashboards>
+                </template>
+            </section>
+        </main>
+    </div>
+</template>

@@ -1,0 +1,37 @@
+<template>
+    <div class="page-head">
+        <div><h1>Dashboard</h1><p>Showroom performance overview</p></div>
+        <button class="btn primary" onclick={refresh}><lightning-icon icon-name="utility:refresh" size="xx-small"></lightning-icon> Refresh</button>
+    </div>
+
+    <div class="cards">
+        <template for:each={cards} for:item="card">
+            <button key={card.key} class="stat-card" data-key={card.key} onclick={openModule}>
+                <span class="stat-label">{card.label}</span>
+                <strong>{card.value}</strong>
+                <span class="stat-foot">{card.note}</span>
+            </button>
+        </template>
+    </div>
+
+    <div class="grid">
+        <section class="panel wide">
+            <div class="panel-head"><strong>Sales & Activity</strong><span>Live org data</span></div>
+            <div class="bar-chart">
+                <template for:each={bars} for:item="bar">
+                    <div key={bar.label} class="bar-col"><div class="bar" style={bar.style}></div><span>{bar.label}</span></div>
+                </template>
+            </div>
+        </section>
+        <section class="panel">
+            <div class="panel-head"><strong>Quick Actions</strong></div>
+            <div class="quick-grid">
+                <template for:each={quickActions} for:item="a">
+                    <button key={a.key} class="quick" data-key={a.key} onclick={openModule}>
+                        <lightning-icon icon-name={a.icon} size="small"></lightning-icon><span>{a.label}</span>
+                    </button>
+                </template>
+            </div>
+        </section>
+    </div>
+</template>

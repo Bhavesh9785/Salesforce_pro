@@ -1,0 +1,111 @@
+<template>
+    <div class="page-head">
+        <div><h1>{moduleLabel}</h1><p>Salesforce org data</p></div>
+        <div class="head-actions">
+            <button class="btn" onclick={refresh}><lightning-icon icon-name="utility:refresh" size="xx-small"></lightning-icon> Refresh</button>
+            <button class="btn primary" onclick={openCreate}><lightning-icon icon-name="utility:add" size="xx-small"></lightning-icon> New {moduleLabel}</button>
+        </div>
+    </div>
+
+    <section class="panel">
+        <div class="toolbar">
+            <div class="search"><lightning-icon icon-name="utility:search" size="x-small"></lightning-icon><input type="search" placeholder="Search..." value={searchText} oninput={handleSearch} onkeydown={handleSearchKey}/></div>
+            <button class="btn" onclick={clearSearch}>Reset</button>
+            <button class="btn" onclick={exportCsv}>Export CSV</button>
+            <button class="btn" onclick={printTable}>Print</button>
+        </div>
+
+        <template if:true={errorMessage}>
+            <div class="error-box"><strong>Unable to load data</strong><span>{errorMessage}</span><button class="btn" onclick={load}>Try Again</button></div>
+        </template>
+
+        <template if:true={loading}>
+            <div class="loading"><lightning-spinner alternative-text="Loading"></lightning-spinner><span>Loading Salesforce data...</span></div>
+        </template>
+
+        <template if:false={loading}>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <template for:each={columns} for:item="c"><th key={c.apiName}>{c.label}</th></template>
+                        <th class="actions-col">Actions</th>
+                    </tr></thead>
+                    <tbody>
+                        <template for:each={rows} for:item="row">
+                            <tr key={row.Id}>
+                                <template for:each={row.cells} for:item="cell">
+                                    <td key={cell.key}>{cell.display}</td>
+                                </template>
+                                <td class="actions">
+                                    <button title="View" data-id={row.Id} onclick={viewRecord}><lightning-icon icon-name="utility:preview" size="xx-small"></lightning-icon></button>
+                                    <button title="Edit" data-id={row.Id} onclick={editRecord}><lightning-icon icon-name="utility:edit" size="xx-small"></lightning-icon></button>
+                                    <button title="Delete" data-id={row.Id} onclick={confirmDelete}><lightning-icon icon-name="utility:delete" size="xx-small"></lightning-icon></button>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+                <template if:true={empty}>
+                    <div class="empty"><div class="empty-icon">○</div><strong>No records found</strong><span>Try another search or create a new record.</span><button class="btn primary" onclick={openCreate}>Create Record</button></div>
+                </template>
+            </div>
+            <div class="pagination">
+                <span>Showing {startRecord}–{endRecord} of {total}</span>
+                <div><button class="page-btn" onclick={previousPage} disabled={firstPage}>‹</button><span>Page {pageNumber} / {pageCount}</span><button class="page-btn" onclick={nextPage} disabled={lastPage}>›</button></div>
+            </div>
+        </template>
+    </section>
+
+    <template if:true={modalOpen}>
+        <div class="backdrop" onclick={backdropClose}>
+            <section class="modal" onclick={stopPropagation}>
+                <header><div><h2>{modalTitle}</h2><span>{moduleLabel}</span></div><button class="close" onclick={closeModal}>×</button></header>
+                <div class="modal-body">
+                    <template if:true={viewMode}>
+                        <div class="details">
+                            <template for:each={formFields} for:item="f">
+                                <div key={f.apiName} class="detail"><label>{f.label}</label><div>{f.display}</div></div>
+                            </template>
+                        </div>
+                    </template>
+                    <template if:false={viewMode}>
+                        <div class="form-grid">
+                            <template for:each={formFields} for:item="f">
+                                <div key={f.apiName} class="field">
+                                    <label>{f.label}{f.requiredMark}</label>
+                                    <template if:true={f.isPicklist}>
+                                        <select data-field={f.apiName} value={f.value} onchange={handleFieldChange}>
+                                            <option value="">-- Select --</option>
+                                            <template for:each={f.options} for:item="o"><option key={o} value={o}>{o}</option></template>
+                                        </select>
+                                    </template>
+                                    <template if:false={f.isPicklist}>
+                                        <template if:true={f.isBoolean}>
+                                            <input type="checkbox" data-field={f.apiName} checked={f.value} onchange={handleBooleanChange}/>
+                                        </template>
+                                        <template if:false={f.isBoolean}>
+                                            <input class={f.inputClass} type={f.inputType} data-field={f.apiName} value={f.value} onchange={handleFieldChange}/>
+                                        </template>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+                <footer>
+                    <button class="btn" onclick={closeModal}>Close</button>
+                    <template if:false={viewMode}><button class="btn primary" onclick={save} disabled={saving}>{saveLabel}</button></template>
+                </footer>
+            </section>
+        </div>
+    </template>
+
+    <template if:true={deleteOpen}>
+        <div class="backdrop">
+            <section class="confirm">
+                <div class="warning">!</div><h2>Delete record?</h2><p>This Salesforce record will be permanently deleted.</p>
+                <div><button class="btn" onclick={cancelDelete}>Cancel</button><button class="btn danger" onclick={deleteRecord} disabled={saving}>Delete</button></div>
+            </section>
+        </div>
+    </template>
+</template>
